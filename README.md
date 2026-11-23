@@ -1,2 +1,2 @@
 # 1945-raylib
-Partial remake of Capcom's 1945 done using C with Raylib
+Partial remake of 1945 by Mark Overmars, Ari Feldman and Dung Truong done using C with Raylib
