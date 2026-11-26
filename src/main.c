@@ -29,6 +29,7 @@
 // Build command: clang -I .\include\ -o .\bin\1945.exe -L .\lib -l raylibdll .\src\main.c
 
 #include "raylib.h"
+#include "sprites.h"
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -46,17 +47,23 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-        const char* appDir = GetApplicationDirectory();
+    const char* appDir = GetApplicationDirectory();
     TraceLog(LOG_INFO, "App Directory: %s", appDir);
 
     ChangeDirectory(appDir);
 
-    Texture2D test = LoadTexture("assets/player/myplane_strip3.png");
-    if(test.id == 0)
+    Texture2D atlas = LoadTexture("./assets/1945_atlas.png");
+    if(atlas.id == 0)
     {
-        TraceLog(LOG_ERROR, "Error loading test texture!");
+        TraceLog(LOG_ERROR, "Error loading sprite atlas!");
         exit(-1);
     }
+
+    SpriteAnimation playerIdleAnim = CreateSpriteAnimation(atlas, 18, (Rectangle[]) {
+		(Rectangle){4, 400, 65, 65},
+		(Rectangle){70, 400, 65, 65},
+		(Rectangle){136, 400, 65, 65},
+	}, 3);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -75,30 +82,25 @@ int main(void)
 
         time += deltaTime;
 
-        unsigned char r = (unsigned char)((sin(time) * 0.5f + 0.5f) * 255);
-        unsigned char g = (unsigned char)((cos(time * 0.7f) * 0.5f + 0.5f) * 255);
-        unsigned char b = (unsigned char)((sin(time * 1.3f + 1.0f) * 0.5f + 0.5f) * 255);
-
-
-        Color color = (Color){r, g, b};
-
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
+
+
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(color);
+            ClearBackground(BLUE);
 
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+            // DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-            DrawRectangle(200, 200, 150, 100, RED);
-            DrawRectangleLines(200, 350, 150, 100, PINK);
-            DrawRectangleLinesEx((Rectangle){200, 450, 150, 100}, 4, DARKGRAY);
+            // DrawRectangle(200, 200, 150, 100, RED);
+            // DrawRectangleLines(200, 350, 150, 100, PINK);
+            // DrawRectangleLinesEx((Rectangle){200, 450, 150, 100}, 4, DARKGRAY);
 
-            DrawTextureEx(test, (Vector2){400, 300}, 0.f, 0.5f, WHITE);
+            // DrawTextureEx(atlas, (Vector2){400, 300}, 0.f, 0.5f, WHITE);
 
             // DrawText();
             // DrawTextEx();
@@ -107,12 +109,18 @@ int main(void)
             // IsMouseButtonDown();
             // IsKeyDown();
 
+            Rectangle dest = { 200, 200, 65, 65 };
+		    Vector2 origin = { 0 };
+		    DrawSpriteAnimationPro(&playerIdleAnim, dest, origin, 0, WHITE);
+
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    // Deallocate all animations
+    DisposeSpriteAnimation(&playerIdleAnim);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
