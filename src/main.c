@@ -29,7 +29,7 @@
 // Build command: clang -I .\include\ -o .\bin\1945.exe -L .\lib -l raylibdll .\src\main.c
 
 #include "raylib.h"
-#include "sprites.h"
+#include "player.h"
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -59,11 +59,14 @@ int main(void)
         exit(-1);
     }
 
-    SpriteAnimation playerIdleAnim = CreateSpriteAnimation(atlas, 18, (Rectangle[]) {
-		(Rectangle){4, 400, 65, 65},
-		(Rectangle){70, 400, 65, 65},
-		(Rectangle){136, 400, 65, 65},
-	}, 3);
+    // SpriteAnimation playerIdleAnim = CreateSpriteAnimation(atlas, 18, (Rectangle[]) {
+	// 	(Rectangle){4, 400, 65, 65},
+	// 	(Rectangle){70, 400, 65, 65},
+	// 	(Rectangle){136, 400, 65, 65},
+	// }, 3);
+
+    Player player;
+    InitPlayer(&player, atlas, 2, 100, 100, (Vector2){350, 600});
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -85,7 +88,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
-
+        HandleInput(&player, deltaTime);
 
 
         // Draw
@@ -109,9 +112,11 @@ int main(void)
             // IsMouseButtonDown();
             // IsKeyDown();
 
-            Rectangle dest = { 200, 200, 65, 65 };
-		    Vector2 origin = { 0 };
-		    DrawSpriteAnimationPro(&playerIdleAnim, dest, origin, 0, WHITE);
+            // Rectangle dest = { 200, 200, 65, 65 };
+		    // Vector2 origin = { 0 };
+		    // DrawSpriteAnimationPro(&playerIdleAnim, dest, origin, 0, WHITE);
+
+            DrawPlayer(&player);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -120,7 +125,8 @@ int main(void)
     // De-Initialization
     //--------------------------------------------------------------------------------------
     // Deallocate all animations
-    DisposeSpriteAnimation(&playerIdleAnim);
+    // DisposeSpriteAnimation(&playerIdleAnim);
+    FreePlayer(&player);
     CloseWindow();        // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
